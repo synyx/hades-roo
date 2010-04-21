@@ -59,9 +59,9 @@ class DefaultSpringManager implements SpringManager {
                         XmlUtils.getDocumentBuilder().parse(
                                 contextMutableFile.getInputStream());
             } else {
-                throw new IllegalStateException(
-                        "Could not acquire applicationContext.xml in "
-                                + contextPath);
+                throw new IllegalStateException(String.format(
+                        "Could not acquire %s in %s", configFileName,
+                        contextPath));
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);
