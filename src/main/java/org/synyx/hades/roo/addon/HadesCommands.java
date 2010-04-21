@@ -1,13 +1,10 @@
 package org.synyx.hades.roo.addon;
 
-import java.util.logging.Logger;
-
 import org.springframework.roo.model.JavaType;
 import org.springframework.roo.shell.CliAvailabilityIndicator;
 import org.springframework.roo.shell.CliCommand;
 import org.springframework.roo.shell.CliOption;
 import org.springframework.roo.shell.CommandMarker;
-import org.springframework.roo.shell.converters.StaticFieldConverter;
 import org.springframework.roo.support.lifecycle.ScopeDevelopmentShell;
 import org.springframework.roo.support.util.Assert;
 
@@ -21,27 +18,17 @@ import org.springframework.roo.support.util.Assert;
 @ScopeDevelopmentShell
 public class HadesCommands implements CommandMarker {
 
-    private static Logger logger =
-            Logger.getLogger(HadesCommands.class.getName());
-
-    private HadesOperations operations;
-    private HadesInstallationOperations installationOperations;
+    private final HadesOperations operations;
+    private final HadesInstallationOperations installationOperations;
 
 
-    public HadesCommands(StaticFieldConverter staticFieldConverter,
-            HadesOperations operations,
+    public HadesCommands(HadesOperations operations,
             HadesInstallationOperations installationOperations) {
 
-        Assert.notNull(staticFieldConverter, "Static field converter required");
         Assert.notNull(operations, "Operations object required");
-
-        staticFieldConverter.add(PropertyName.class);
 
         this.operations = operations;
         this.installationOperations = installationOperations;
-
-        logger.warning("Loaded " + HadesCommands.class.getName()
-                + "; try the 'welcome' commands");
     }
 
 
