@@ -25,7 +25,8 @@ public class HadesCommands implements CommandMarker {
     public HadesCommands(HadesOperations operations,
             HadesInstallationOperations installationOperations) {
 
-        Assert.notNull(operations, "Operations object required");
+        Assert.notNull(operations);
+        Assert.notNull(installationOperations);
 
         this.operations = operations;
         this.installationOperations = installationOperations;
