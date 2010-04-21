@@ -24,11 +24,13 @@ public interface SpringManager {
      * Creates a Spring configuration file out of the given template. Allows
      * post processing by providing an {@link XmlTemplateProcessor}.
      * 
+     * @param owningClass the class the template has to be located relative to
      * @param templateFile
      * @param destination
      * @param processor
      */
-    void createConfigFileFromTemplate(String templateFile, String destination,
+    void createConfigFileFromTemplate(Class<?> owningClass,
+            String templateFile, String destination,
             XmlTemplateProcessor processor);
 
     /**

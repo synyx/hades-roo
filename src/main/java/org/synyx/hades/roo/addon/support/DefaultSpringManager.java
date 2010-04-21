@@ -75,12 +75,13 @@ class DefaultSpringManager implements SpringManager {
      * (non-Javadoc)
      * 
      * @see
-     * org.synyx.hades.roo.addon.SpringManager#createConfigFileFromTemplate(
-     * java.lang.String, java.lang.String,
-     * org.synyx.hades.roo.addon.SpringManager.XmlTemplateProcessor)
+     * org.synyx.hades.roo.addon.support.SpringManager#createConfigFileFromTemplate
+     * (java.lang.Class, java.lang.String, java.lang.String,
+     * org.synyx.hades.roo.addon.support.SpringManager.XmlTemplateProcessor)
      */
-    public void createConfigFileFromTemplate(String templateFile,
-            String destination, XmlTemplateProcessor processor) {
+    public void createConfigFileFromTemplate(Class<?> owningClass,
+            String templateFile, String destination,
+            XmlTemplateProcessor processor) {
 
         String destinationFile =
                 pathResolver
@@ -93,11 +94,10 @@ class DefaultSpringManager implements SpringManager {
         try {
 
             MutableFile file = fileManager.createFile(destinationFile);
-            applyTemplateProcessor(file, processor);
+            FileCopyUtils.copy(TemplateUtils.getTemplate(owningClass,
+                    templateFile), file.getOutputStream());
 
-            FileCopyUtils.copy(TemplateUtils.getTemplate(getClass(),
-                    "applicationContext-security-template.xml"), file
-                    .getOutputStream());
+            applyTemplateProcessor(file, processor);
 
         } catch (IOException ioe) {
             throw new IllegalStateException(ioe);
