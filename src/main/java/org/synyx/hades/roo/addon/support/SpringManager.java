@@ -21,6 +21,15 @@ public interface SpringManager {
 
 
     /**
+     * Returns whether the configuration file with the given name exists.
+     * 
+     * @param configFileName
+     * @return
+     */
+    boolean configFileExists(String configFileName);
+
+
+    /**
      * Creates a Spring configuration file out of the given template. Allows
      * post processing by providing an {@link XmlTemplateProcessor}.
      * 

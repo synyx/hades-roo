@@ -46,16 +46,40 @@ class DefaultSpringManager implements SpringManager {
      */
     public SpringConfigFile getConfigFile(String configFileName) {
 
-        String contextPath =
-                pathResolver.getIdentifier(Path.SPRING_CONFIG_ROOT,
-                        configFileName);
+        String filePath = getConfigFileLocation(configFileName);
 
-        if (fileManager.exists(contextPath)) {
-            return new SpringConfigFile(fileManager.updateFile(contextPath));
+        if (fileManager.exists(filePath)) {
+            return new SpringConfigFile(fileManager.updateFile(filePath));
         } else {
             throw new IllegalStateException(String.format(
-                    "Could not acquire %s in %s", configFileName, contextPath));
+                    "Could not acquire %s in %s", configFileName, filePath));
         }
+    }
+
+
+    /**
+     * Returns the full qualified configuration file name for the given relative
+     * one.
+     * 
+     * @param filename
+     * @return
+     */
+    private String getConfigFileLocation(String filename) {
+
+        return pathResolver.getIdentifier(Path.SPRING_CONFIG_ROOT, filename);
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.synyx.hades.roo.addon.support.SpringManager#configFileExists(java
+     * .lang.String)
+     */
+    public boolean configFileExists(String configFileName) {
+
+        return fileManager.exists(getConfigFileLocation(configFileName));
     }
 
 
