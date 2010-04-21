@@ -44,29 +44,18 @@ class DefaultSpringManager implements SpringManager {
      * @see org.synyx.hades.roo.addon.SpringManager#getConfigFile(java.lang
      * .String)
      */
-    public Document getConfigFile(String configFileName) {
+    public SpringConfigFile getConfigFile(String configFileName) {
 
         String contextPath =
                 pathResolver.getIdentifier(Path.SPRING_CONFIG_ROOT,
                         configFileName);
-        MutableFile contextMutableFile = null;
 
-        try {
-            if (fileManager.exists(contextPath)) {
-
-                contextMutableFile = fileManager.updateFile(contextPath);
-
-                return XmlUtils.getDocumentBuilder().parse(
-                        contextMutableFile.getInputStream());
-            } else {
-                throw new IllegalStateException(String.format(
-                        "Could not acquire %s in %s", configFileName,
-                        contextPath));
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+        if (fileManager.exists(contextPath)) {
+            return new SpringConfigFile(fileManager.updateFile(contextPath));
+        } else {
+            throw new IllegalStateException(String.format(
+                    "Could not acquire %s in %s", configFileName, contextPath));
         }
-
     }
 
 

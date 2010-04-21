@@ -7,6 +7,8 @@ import org.springframework.roo.project.ProjectMetadata;
 import org.springframework.roo.project.ProjectOperations;
 import org.springframework.roo.support.lifecycle.ScopeDevelopment;
 import org.springframework.roo.support.util.XmlUtils;
+import org.synyx.hades.roo.addon.support.Spring;
+import org.synyx.hades.roo.addon.support.SpringConfigFile;
 import org.synyx.hades.roo.addon.support.SpringManager;
 import org.synyx.hades.roo.addon.support.SpringManager.XmlTemplateProcessor;
 import org.w3c.dom.Element;
@@ -93,6 +95,11 @@ public class HadesInstallationOperations {
         springManager.createConfigFileFromTemplate(getClass(),
                 "applicationContext-hades-template.xml",
                 "applicationContext-hades.xml", new BasePackageConfigurer());
+
+        SpringConfigFile config =
+                springManager.getConfigFile(Spring.APPLICATION_CONTEXT);
+        config.addImport("applicationContext-hades.xml");
+        config.apply();
     }
 
     private class BasePackageConfigurer implements XmlTemplateProcessor {
