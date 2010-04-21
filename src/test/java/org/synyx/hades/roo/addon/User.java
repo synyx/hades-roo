@@ -5,7 +5,7 @@ import javax.persistence.Id;
 
 
 /**
- * @author Oliver Gierke - gierke@synyx.de
+ * @author Oliver Gierke
  */
 @Entity
 public class User {

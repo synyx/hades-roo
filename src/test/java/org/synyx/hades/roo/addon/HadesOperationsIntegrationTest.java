@@ -16,7 +16,9 @@ import org.synyx.hades.roo.addon.support.AbstractRooIntegrationTests;
 
 
 /**
- * @author Oliver Gierke - gierke@synyx.de
+ * Intergration test for {@link HadesOperations}.
+ * 
+ * @author Oliver Gierke
  */
 public class HadesOperationsIntegrationTest extends AbstractRooIntegrationTests {
 

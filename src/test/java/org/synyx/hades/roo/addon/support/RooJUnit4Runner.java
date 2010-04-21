@@ -10,7 +10,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 /**
- * @author Oliver Gierke - gierke@synyx.de
+ * Custom {@link SpringJUnit4ClassRunner} to prepare logging prior to load the
+ * actual {@link org.springframework.context.ApplicationContext}. Needed as
+ * otherwise a {@link ClassNotFoundException} is being thrown.
+ * 
+ * @see org.springframework.roo.bootstrap.Bootstrap
+ * @author Oliver Gierke
  */
 public class RooJUnit4Runner extends SpringJUnit4ClassRunner {
 

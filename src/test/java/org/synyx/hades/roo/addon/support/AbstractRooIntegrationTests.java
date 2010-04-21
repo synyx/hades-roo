@@ -5,6 +5,9 @@ import org.springframework.test.context.ContextConfiguration;
 
 
 /**
+ * Base class to extend from that reduced the need to configure config file
+ * location and custom JUnit runner class.
+ * 
  * @author Oliver Gierke
  */
 @RunWith(RooJUnit4Runner.class)

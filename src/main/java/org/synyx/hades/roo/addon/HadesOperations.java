@@ -2,8 +2,6 @@ package org.synyx.hades.roo.addon;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.roo.classpath.PhysicalTypeCategory;
 import org.springframework.roo.classpath.PhysicalTypeIdentifier;
@@ -20,32 +18,15 @@ import org.springframework.roo.project.PathResolver;
 import org.springframework.roo.project.ProjectMetadata;
 import org.springframework.roo.support.lifecycle.ScopeDevelopment;
 import org.springframework.roo.support.util.Assert;
-import org.synyx.hades.domain.AbstractPersistable;
-import org.synyx.hades.domain.Persistable;
-import org.synyx.hades.domain.auditing.AbstractAuditable;
-import org.synyx.hades.domain.auditing.Auditable;
 
 
 /**
- * Implementation of commands that are available via the Roo shell.
+ * Implementation of Hades commands that are available via the Roo shell.
  * 
- * @author Ben Alex
- * @since 1.0
+ * @author Oliver Gierke
  */
 @ScopeDevelopment
 public class HadesOperations {
-
-    private static final Map<Class<?>, Integer> classesMap =
-            new HashMap<Class<?>, Integer>();
-    private static final Map<Class<?>, Integer> interfacesMap =
-            new HashMap<Class<?>, Integer>();
-
-    static {
-        classesMap.put(AbstractAuditable.class, 1);
-        classesMap.put(AbstractPersistable.class, 0);
-        interfacesMap.put(Persistable.class, 0);
-        interfacesMap.put(Auditable.class, 1);
-    }
 
     // private static Logger logger =
     // Logger.getLogger(HadesOperations.class.getName());
