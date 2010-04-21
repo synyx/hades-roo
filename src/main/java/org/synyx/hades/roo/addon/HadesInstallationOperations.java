@@ -90,7 +90,7 @@ public class HadesInstallationOperations {
 
         projectOperations.dependencyUpdate(HADES);
 
-        springManager.createConfigFileFromTemplate(
+        springManager.createConfigFileFromTemplate(getClass(),
                 "applicationContext-hades-template.xml",
                 "applicationContext-hades.xml", new BasePackageConfigurer());
     }
