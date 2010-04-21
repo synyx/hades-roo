@@ -28,6 +28,11 @@ public class HadesInstallationOperations {
     private static final Dependency HADES =
             new Dependency(HADES_ID, HADES_ID, HADES_VERSION);
 
+    private static final String HADES_CONFIG_FILE =
+            "applicationContext-hades.xml";
+    private static final String HADES_CONFIG_TEMPLATE =
+            "applicationContext-hades-template.xml";
+
     private JpaOperations jpaOperations;
     private ProjectOperations projectOperations;
     private SpringManager springManager;
@@ -52,20 +57,23 @@ public class HadesInstallationOperations {
     }
 
 
+    /**
+     * Returns whether Hades is already installed for the current project.
+     * Checks that general persistence setup has been made, that Hades
+     * dependency was added to the project and the Hades config file exists.
+     * 
+     * @return
+     */
     public boolean isInstalled() {
 
-        ProjectMetadata metadata = getProjectMetadata();
-
-        if (metadata == null) {
-            return false;
-        }
-
-        boolean hadesDeclared =
+        boolean hadesDependencyDeclared =
                 getProjectMetadata().getDependenciesExcludingVersion(HADES)
                         .size() == 1;
-        boolean jpaInstalled = jpaOperations.isJpaInstalled();
+        boolean hadesConfigFileExists =
+                springManager.configFileExists(HADES_CONFIG_FILE);
 
-        return jpaInstalled && hadesDeclared;
+        return canBeInstalled() && hadesDependencyDeclared
+                && hadesConfigFileExists;
     }
 
 
@@ -84,24 +92,44 @@ public class HadesInstallationOperations {
      */
     public boolean canBeInstalled() {
 
+        ProjectMetadata metadata = getProjectMetadata();
+
+        if (metadata == null) {
+            return false;
+        }
+
         return jpaOperations.isJpaInstalled();
     }
 
 
+    /**
+     * Installs Hades support for the Roo project:
+     * <ol>
+     * <li>Adds Hades as dependency</li>
+     * <li>Creates config file with Hades namespace</li>
+     * <li>Adds import of Hades config file from application config file</li>
+     * </ol>
+     */
     public void installHades() {
 
         projectOperations.dependencyUpdate(HADES);
 
         springManager.createConfigFileFromTemplate(getClass(),
-                "applicationContext-hades-template.xml",
-                "applicationContext-hades.xml", new BasePackageConfigurer());
+                HADES_CONFIG_TEMPLATE, HADES_CONFIG_FILE,
+                new BasePackageConfigurer());
 
         SpringConfigFile config =
                 springManager.getConfigFile(Spring.APPLICATION_CONTEXT);
-        config.addImport("applicationContext-hades.xml");
+        config.addImport(HADES_CONFIG_FILE);
         config.apply();
     }
 
+    /**
+     * Template processor that sets the Hades namespace {@literal base-package}
+     * attribute to the project's top level package.
+     * 
+     * @author Oliver Gierke
+     */
     private class BasePackageConfigurer implements XmlTemplateProcessor {
 
         /*
