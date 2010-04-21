@@ -11,7 +11,6 @@ import org.springframework.roo.support.util.FileCopyUtils;
 import org.springframework.roo.support.util.TemplateUtils;
 import org.springframework.roo.support.util.XmlUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 
 /**
@@ -44,20 +43,20 @@ class DefaultSpringManager implements SpringManager {
      * @see org.synyx.hades.roo.addon.SpringManager#getConfigFile(java.lang
      * .String)
      */
-    public Element getConfigFile(String configFileName) {
+    public Document getConfigFile(String configFileName) {
 
         String contextPath =
                 pathResolver.getIdentifier(Path.SPRING_CONFIG_ROOT,
                         configFileName);
         MutableFile contextMutableFile = null;
 
-        Document appCtx;
         try {
             if (fileManager.exists(contextPath)) {
+
                 contextMutableFile = fileManager.updateFile(contextPath);
-                appCtx =
-                        XmlUtils.getDocumentBuilder().parse(
-                                contextMutableFile.getInputStream());
+
+                return XmlUtils.getDocumentBuilder().parse(
+                        contextMutableFile.getInputStream());
             } else {
                 throw new IllegalStateException(String.format(
                         "Could not acquire %s in %s", configFileName,
@@ -67,7 +66,6 @@ class DefaultSpringManager implements SpringManager {
             throw new IllegalStateException(e);
         }
 
-        return appCtx.getDocumentElement();
     }
 
 
