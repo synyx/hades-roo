@@ -1,5 +1,9 @@
 package org.synyx.hades.roo.addon.support;
 
+import static org.springframework.roo.support.util.FileCopyUtils.*;
+import static org.springframework.roo.support.util.TemplateUtils.*;
+import static org.springframework.roo.support.util.XmlUtils.*;
+
 import java.io.IOException;
 
 import org.springframework.roo.process.manager.FileManager;
@@ -7,9 +11,6 @@ import org.springframework.roo.process.manager.MutableFile;
 import org.springframework.roo.project.Path;
 import org.springframework.roo.project.PathResolver;
 import org.springframework.roo.support.lifecycle.ScopeDevelopment;
-import org.springframework.roo.support.util.FileCopyUtils;
-import org.springframework.roo.support.util.TemplateUtils;
-import org.springframework.roo.support.util.XmlUtils;
 import org.w3c.dom.Document;
 
 
@@ -92,8 +93,7 @@ class DefaultSpringManager implements SpringManager {
         try {
 
             MutableFile file = fileManager.createFile(destinationFile);
-            FileCopyUtils.copy(TemplateUtils.getTemplate(owningClass,
-                    templateFile), file.getOutputStream());
+            copy(getTemplate(owningClass, templateFile), file.getOutputStream());
 
             applyTemplateProcessor(file, processor);
 
@@ -113,14 +113,13 @@ class DefaultSpringManager implements SpringManager {
         Document document;
         try {
 
-            document =
-                    XmlUtils.getDocumentBuilder().parse(file.getInputStream());
+            document = getDocumentBuilder().parse(file.getInputStream());
 
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
 
         callback.postProcess(document.getDocumentElement());
-        XmlUtils.writeXml(file.getOutputStream(), document);
+        writeXml(createIndentingTransformer(), file.getOutputStream(), document);
     }
 }

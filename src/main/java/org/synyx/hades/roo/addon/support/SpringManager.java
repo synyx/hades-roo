@@ -1,6 +1,5 @@
 package org.synyx.hades.roo.addon.support;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -18,7 +17,7 @@ public interface SpringManager {
      * @param configFileName
      * @return
      */
-    Document getConfigFile(String configFileName);
+    SpringConfigFile getConfigFile(String configFileName);
 
 
     /**
