@@ -107,7 +107,7 @@ public class HadesInstallationOperations {
         public void postProcess(Element documentElement) {
 
             Element element =
-                    XmlUtils.findFirstElementByName("dao-config",
+                    XmlUtils.findFirstElementByName("hades:dao-config",
                             documentElement);
             element.setAttribute("base-package", getProjectMetadata()
                     .getTopLevelPackage().getFullyQualifiedPackageName());
