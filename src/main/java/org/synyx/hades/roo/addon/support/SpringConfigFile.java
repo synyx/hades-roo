@@ -46,10 +46,14 @@ public class SpringConfigFile {
      */
     public void addImport(String resourceLocation) {
 
-        Element element = document.createElement("import");
-        element.setAttribute("resource", resourceLocation);
+        if (findElements("//import[@resource='" + resourceLocation + "']",
+                document.getDocumentElement()).isEmpty()) {
 
-        document.getDocumentElement().appendChild(element);
+            Element element = document.createElement("import");
+            element.setAttribute("resource", resourceLocation);
+
+            document.getDocumentElement().appendChild(element);
+        }
     }
 
 
