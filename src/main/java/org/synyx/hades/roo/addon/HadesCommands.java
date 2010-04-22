@@ -1,5 +1,6 @@
 package org.synyx.hades.roo.addon;
 
+import org.springframework.roo.model.JavaPackage;
 import org.springframework.roo.model.JavaType;
 import org.springframework.roo.shell.CliAvailabilityIndicator;
 import org.springframework.roo.shell.CliCommand;
@@ -35,9 +36,10 @@ public class HadesCommands implements CommandMarker {
 
     @CliCommand(value = "hades repository", help = "Creates a Hades repository interface")
     public void createDaoInterface(
-            @CliOption(key = "entity", mandatory = true, unspecifiedDefaultValue = "*", optionContext = "update,project", help = "The entity you want to create the DAO for.") JavaType typeName) {
+            @CliOption(key = "entity", mandatory = true, optionContext = "update,project", help = "The entity you want to create the repository for") JavaType typeName,
+            @CliOption(key = "package") JavaPackage daoPackage) {
 
-        operations.createDaoClass(typeName);
+        operations.createDaoClass(typeName, daoPackage);
     }
 
 
@@ -58,6 +60,7 @@ public class HadesCommands implements CommandMarker {
     @CliAvailabilityIndicator("hades install")
     public boolean canInstallHades() {
 
-        return installationOperations.canBeInstalled();
+        return installationOperations.canBeInstalled()
+                && !installationOperations.isInstalled();
     }
 }

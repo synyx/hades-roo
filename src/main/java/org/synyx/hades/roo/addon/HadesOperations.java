@@ -12,6 +12,7 @@ import org.springframework.roo.classpath.details.MemberFindingUtils;
 import org.springframework.roo.classpath.operations.ClasspathOperations;
 import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.model.DataType;
+import org.springframework.roo.model.JavaPackage;
 import org.springframework.roo.model.JavaType;
 import org.springframework.roo.project.Path;
 import org.springframework.roo.project.PathResolver;
@@ -89,26 +90,32 @@ public class HadesOperations {
     }
 
 
-    public void createDaoClass(JavaType entity) {
+    public void createDaoClass(JavaType entity, JavaPackage daoPackage) {
 
-        EntityType entityType = new EntityType(entity, classpathOperations);
+        EntityType entityType =
+                new EntityType(entity, daoPackage, classpathOperations);
         ClassOrInterfaceTypeDetails daoInterface =
                 entityType.createDao(pathResolver);
         classpathOperations.generateClassFile(daoInterface);
     }
 
-    public static class EntityType {
+    static class EntityType {
 
         private static final String DAO_POSTFIX = "Repository";
 
         private ClasspathOperations operations;
         private JavaType entityType;
+        private JavaPackage daoPackage;
 
 
-        public EntityType(JavaType type, ClasspathOperations operations) {
+        public EntityType(JavaType type, JavaPackage daoPackage,
+                ClasspathOperations operations) {
 
             this.entityType = type;
             this.operations = operations;
+
+            this.daoPackage =
+                    daoPackage != null ? daoPackage : entityType.getPackage();
         }
 
 
@@ -124,8 +131,8 @@ public class HadesOperations {
 
         public JavaType getDaoInterfaceName() {
 
-            return new JavaType(entityType.getFullyQualifiedTypeName()
-                    + DAO_POSTFIX);
+            return new JavaType(daoPackage + "."
+                    + entityType.getSimpleTypeName() + DAO_POSTFIX);
         }
 
 
