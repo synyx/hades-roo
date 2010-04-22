@@ -33,7 +33,7 @@ public class HadesCommands implements CommandMarker {
     }
 
 
-    @CliCommand(value = "hades dao", help = "Creates a Hades DAO interface")
+    @CliCommand(value = "hades repository", help = "Creates a Hades repository interface")
     public void createDaoInterface(
             @CliOption(key = "entity", mandatory = true, unspecifiedDefaultValue = "*", optionContext = "update,project", help = "The entity you want to create the DAO for.") JavaType typeName) {
 
@@ -41,7 +41,7 @@ public class HadesCommands implements CommandMarker {
     }
 
 
-    @CliAvailabilityIndicator("hades dao")
+    @CliAvailabilityIndicator("hades repository")
     public boolean isCreateDaoInterfaceAvailable() {
 
         return installationOperations.isInstalled();
