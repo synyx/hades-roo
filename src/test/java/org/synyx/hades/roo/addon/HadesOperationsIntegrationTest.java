@@ -3,15 +3,10 @@ package org.synyx.hades.roo.addon;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetails;
-import org.springframework.roo.classpath.operations.ClasspathOperations;
 import org.springframework.roo.model.JavaType;
-import org.springframework.roo.project.PathResolver;
-import org.synyx.hades.roo.addon.HadesOperations.EntityType;
 import org.synyx.hades.roo.addon.support.AbstractRooIntegrationTests;
 
 
@@ -22,31 +17,42 @@ import org.synyx.hades.roo.addon.support.AbstractRooIntegrationTests;
  */
 public class HadesOperationsIntegrationTest extends AbstractRooIntegrationTests {
 
-    private static final String DOMAIN_CLASS = "org.synyx.hades.roo.addon.User";
-    private static final String REPOSITORY_INTERFACE = "UserRepository";
+    private static final String PACKAGE = "org.synyx.hades.roo.addon";
+    private static final JavaType ID_TYPE = new JavaType("java.lang.Long");
+    private static final JavaType DOMAIN_CLASS =
+            new JavaType(PACKAGE + ".User");
+    private static final JavaType REPOSITORY_INTERFACE =
+            new JavaType(PACKAGE + ".UserRepository");
 
     @Autowired
-    private PathResolver pathResolver;
-
-    @Autowired
-    private ClasspathOperations operations;
+    private HadesOperations hades;
 
 
     @Test
-    public void createsDaoClassCorrectly() throws Exception {
+    public void discoveresIdCorrectly() throws Exception {
 
-        EntityType type =
-                new EntityType(new JavaType(DOMAIN_CLASS), operations);
-        ClassOrInterfaceTypeDetails dao = type.createDao(pathResolver);
+        assertThat(hades.getIdType(DOMAIN_CLASS), is(ID_TYPE));
+    }
 
-        assertThat(dao.getName().getSimpleTypeName(), is(REPOSITORY_INTERFACE));
 
-        List<JavaType> parameters =
-                dao.getExtendsTypes().get(0).getParameters();
+    @Test
+    public void createsRepositorySuprtInterfaceCorrectly() throws Exception {
 
-        assertThat(parameters.get(0).getFullyQualifiedTypeName(), is(User.class
-                .getName()));
-        assertThat(parameters.get(1).getFullyQualifiedTypeName(), is(Long.class
-                .getName()));
+        JavaType repositorySupterType =
+                hades.getGenericDaoSuperType(DOMAIN_CLASS);
+
+        assertThat(repositorySupterType.getParameters().get(0),
+                is(DOMAIN_CLASS));
+        assertThat(repositorySupterType.getParameters().get(1), is(ID_TYPE));
+    }
+
+
+    @Test
+    public void determinesRepositoryInterfaceCorrectly() throws Exception {
+
+        ClassOrInterfaceTypeDetails repositoryInterface =
+                hades.determineRepositoryInterface(DOMAIN_CLASS, null);
+
+        assertThat(repositoryInterface.getName(), is(REPOSITORY_INTERFACE));
     }
 }

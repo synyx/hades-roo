@@ -2,13 +2,18 @@ package org.synyx.hades.roo.addon;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
 
+import javax.persistence.Id;
+
+import org.springframework.roo.addon.entity.EntityMetadata;
 import org.springframework.roo.classpath.PhysicalTypeCategory;
 import org.springframework.roo.classpath.PhysicalTypeIdentifier;
 import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetails;
 import org.springframework.roo.classpath.details.DefaultClassOrInterfaceTypeDetails;
 import org.springframework.roo.classpath.details.FieldMetadata;
 import org.springframework.roo.classpath.details.MemberFindingUtils;
+import org.springframework.roo.classpath.details.MethodMetadata;
 import org.springframework.roo.classpath.operations.ClasspathOperations;
 import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.model.DataType;
@@ -19,6 +24,7 @@ import org.springframework.roo.project.PathResolver;
 import org.springframework.roo.project.ProjectMetadata;
 import org.springframework.roo.support.lifecycle.ScopeDevelopment;
 import org.springframework.roo.support.util.Assert;
+import org.synyx.hades.dao.GenericDao;
 
 
 /**
@@ -29,14 +35,14 @@ import org.springframework.roo.support.util.Assert;
 @ScopeDevelopment
 public class HadesOperations {
 
-    // private static Logger logger =
-    // Logger.getLogger(HadesOperations.class.getName());
+    private static final JavaType idType = new JavaType(Id.class.getName());
 
-    private static final JavaType idType = new JavaType("javax.persistence.Id");
+    private static final String GENERIC_DAO_INTERFACE =
+            GenericDao.class.getName();
 
-    private MetadataService metadataService;
-    private ClasspathOperations classpathOperations;
-    private PathResolver pathResolver;
+    private final MetadataService metadataService;
+    private final ClasspathOperations classpathOperations;
+    private final PathResolver pathResolver;
 
 
     public HadesOperations(MetadataService metadataService,
@@ -83,49 +89,128 @@ public class HadesOperations {
         ProjectMetadata projectMetadata =
                 (ProjectMetadata) metadataService.get(ProjectMetadata
                         .getProjectIdentifier());
-        if (projectMetadata == null) {
-            return null;
-        }
+
         return projectMetadata.getPathResolver();
+    }
+
+
+    /**
+     * Looks up the id type of the given entity type. The lookup process favours
+     * {@link EntityMetadata} field or method but also checks for a plain
+     * {@link Id} annotated property, too.
+     * 
+     * @param entityType
+     * @return
+     */
+    JavaType getIdType(JavaType entityType) {
+
+        EntityMetadata entityMetadata =
+                (EntityMetadata) metadataService.get(EntityMetadata
+                        .createIdentifier(entityType, Path.SRC_MAIN_JAVA));
+
+        if (entityMetadata != null) {
+
+            FieldMetadata field = entityMetadata.getIdentifierField();
+
+            if (field != null) {
+                return field.getFieldType();
+            }
+
+            MethodMetadata method = entityMetadata.getIdentifierAccessor();
+
+            if (method != null) {
+                return method.getReturnType();
+            }
+        }
+
+        ClassOrInterfaceTypeDetails details =
+                classpathOperations.getClassOrInterface(entityType);
+
+        List<FieldMetadata> fieldsWithAnnotation =
+                MemberFindingUtils.getFieldsWithAnnotation(details, idType);
+
+        if (!fieldsWithAnnotation.isEmpty()) {
+            return fieldsWithAnnotation.get(0).getFieldType();
+        }
+
+        throw new IllegalStateException(
+                "Could not find an @Id property or method in your entity class! Be sure it has one.");
     }
 
 
     public void createDaoClass(JavaType entity, JavaPackage daoPackage) {
 
-        EntityType entityType =
-                new EntityType(entity, daoPackage, classpathOperations);
         ClassOrInterfaceTypeDetails daoInterface =
-                entityType.createDao(pathResolver);
+                determineRepositoryInterface(entity, daoPackage);
+
         classpathOperations.generateClassFile(daoInterface);
+    }
+
+
+    /**
+     * @param entity
+     * @param daoPackage
+     * @return
+     */
+    ClassOrInterfaceTypeDetails determineRepositoryInterface(JavaType entity,
+            JavaPackage daoPackage) {
+
+        EntityType entityType = new EntityType(entity, daoPackage);
+
+        JavaType interfaceName = entityType.getDaoInterfaceName();
+        JavaType superType = getGenericDaoSuperType(entity);
+
+        String ressourceIdentifier =
+                classpathOperations.getPhysicalLocationCanonicalPath(
+                        interfaceName, Path.SRC_MAIN_JAVA);
+
+        String metadataId =
+                PhysicalTypeIdentifier.createIdentifier(interfaceName,
+                        pathResolver.getPath(ressourceIdentifier));
+
+        ClassOrInterfaceTypeDetails daoInterface =
+                new DefaultClassOrInterfaceTypeDetails(metadataId,
+                        interfaceName, Modifier.PUBLIC,
+                        PhysicalTypeCategory.INTERFACE, null, null, null, null,
+                        Arrays.asList(superType), null, null, null);
+
+        return daoInterface;
+    }
+
+
+    /**
+     * Returns the generic supertype typed to the given entity type.
+     * 
+     * @param entityType
+     * @return
+     */
+    JavaType getGenericDaoSuperType(JavaType entityType) {
+
+        JavaType entityIdType = getIdType(entityType);
+
+        return new JavaType(GENERIC_DAO_INTERFACE, 0, DataType.TYPE, null,
+                Arrays.asList(entityType, entityIdType));
     }
 
     static class EntityType {
 
         private static final String DAO_POSTFIX = "Repository";
 
-        private ClasspathOperations operations;
-        private JavaType entityType;
-        private JavaPackage daoPackage;
+        private final JavaType entityType;
+        private final JavaPackage daoPackage;
 
 
-        public EntityType(JavaType type, JavaPackage daoPackage,
-                ClasspathOperations operations) {
+        /**
+         * Creates a new {@link EntityType}.
+         * 
+         * @param type
+         * @param daoPackage
+         */
+        public EntityType(JavaType type, JavaPackage daoPackage) {
 
             this.entityType = type;
-            this.operations = operations;
-
             this.daoPackage =
                     daoPackage != null ? daoPackage : entityType.getPackage();
-        }
-
-
-        public JavaType getGenericDaoInterface() {
-
-            JavaType entityIdType = getIdType(entityType);
-
-            return new JavaType("org.synyx.hades.dao.GenericDao", 0,
-                    DataType.TYPE, null, Arrays
-                            .asList(entityType, entityIdType));
         }
 
 
@@ -133,44 +218,6 @@ public class HadesOperations {
 
             return new JavaType(daoPackage + "."
                     + entityType.getSimpleTypeName() + DAO_POSTFIX);
-        }
-
-
-        public ClassOrInterfaceTypeDetails createDao(PathResolver pathResolver) {
-
-            JavaType interfaceName = getDaoInterfaceName();
-
-            String ressourceIdentifier =
-                    operations.getPhysicalLocationCanonicalPath(interfaceName,
-                            Path.SRC_MAIN_JAVA);
-
-            String metadataId =
-                    PhysicalTypeIdentifier.createIdentifier(interfaceName,
-                            pathResolver.getPath(ressourceIdentifier));
-
-            return new DefaultClassOrInterfaceTypeDetails(metadataId,
-                    interfaceName, Modifier.PUBLIC,
-                    PhysicalTypeCategory.INTERFACE, null, null, null, null,
-                    Arrays.asList(getGenericDaoInterface()), null, null, null);
-        }
-
-
-        /**
-         * Recursively resolves the ID type for the given type expecting it
-         * either {@code Persistable} or {@code Auditable}.
-         * 
-         * @param type
-         * @return
-         */
-        private JavaType getIdType(JavaType javaType) {
-
-            ClassOrInterfaceTypeDetails details =
-                    operations.getClassOrInterface(javaType);
-            FieldMetadata metadata =
-                    MemberFindingUtils.getFieldsWithAnnotation(details, idType)
-                            .get(0);
-
-            return metadata.getFieldType();
         }
     }
 }
