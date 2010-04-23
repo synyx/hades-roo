@@ -33,7 +33,7 @@ import org.synyx.hades.dao.GenericDao;
  * @author Oliver Gierke
  */
 @ScopeDevelopment
-public class HadesOperations {
+class HadesOperations {
 
     private static final JavaType idType = new JavaType(Id.class.getName());
 

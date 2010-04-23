@@ -2,9 +2,7 @@ package org.synyx.hades.roo.addon;
 
 import org.springframework.roo.addon.jpa.JpaOperations;
 import org.springframework.roo.metadata.MetadataService;
-import org.springframework.roo.project.Dependency;
 import org.springframework.roo.project.ProjectMetadata;
-import org.springframework.roo.project.ProjectOperations;
 import org.springframework.roo.support.lifecycle.ScopeDevelopment;
 import org.springframework.roo.support.util.XmlUtils;
 import org.synyx.hades.roo.addon.support.Spring;
@@ -20,13 +18,7 @@ import org.w3c.dom.Element;
  * @author Oliver Gierke
  */
 @ScopeDevelopment
-public class HadesInstallationOperations {
-
-    private static final String HADES_ID = "org.synyx.hades";
-    private static final String HADES_VERSION = "2.0.0.BUILD-SNAPSHOT";
-
-    private static final Dependency HADES =
-            new Dependency(HADES_ID, HADES_ID, HADES_VERSION);
+class HadesInstallationOperations {
 
     private static final String HADES_CONFIG_FILE =
             "applicationContext-hades.xml";
@@ -34,7 +26,7 @@ public class HadesInstallationOperations {
             "applicationContext-hades-template.xml";
 
     private JpaOperations jpaOperations;
-    private ProjectOperations projectOperations;
+    private HadesProjectOperations projectOperations;
     private SpringManager springManager;
     private MetadataService metadataService;
 
@@ -46,13 +38,12 @@ public class HadesInstallationOperations {
      * @param metadataService
      */
     public HadesInstallationOperations(JpaOperations jpaOperations,
-            ProjectOperations projectOperations, SpringManager springManager,
-            MetadataService metadataService) {
+            HadesProjectOperations projectOperations,
+            SpringManager springManager, MetadataService metadataService) {
 
         this.jpaOperations = jpaOperations;
         this.projectOperations = projectOperations;
         this.springManager = springManager;
-
         this.metadataService = metadataService;
     }
 
@@ -67,8 +58,8 @@ public class HadesInstallationOperations {
     public boolean isInstalled() {
 
         boolean hadesDependencyDeclared =
-                getProjectMetadata().getDependenciesExcludingVersion(HADES)
-                        .size() == 1;
+                getProjectMetadata().getDependenciesExcludingVersion(
+                        HadesProjectOperations.HADES).size() == 1;
         boolean hadesConfigFileExists =
                 springManager.configFileExists(HADES_CONFIG_FILE);
 
@@ -112,7 +103,8 @@ public class HadesInstallationOperations {
      */
     public void installHades() {
 
-        projectOperations.dependencyUpdate(HADES);
+        projectOperations.addSynyxRepository();
+        projectOperations.addHadesDependency();
 
         springManager.createConfigFileFromTemplate(getClass(),
                 HADES_CONFIG_TEMPLATE, HADES_CONFIG_FILE,
