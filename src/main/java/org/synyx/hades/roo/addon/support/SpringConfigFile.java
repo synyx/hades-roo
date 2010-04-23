@@ -62,6 +62,6 @@ public class SpringConfigFile {
      */
     public void apply() {
 
-        writeXml(createIndentingTransformer(), file.getOutputStream(), document);
+        writeXml(file.getOutputStream(), document);
     }
 }
