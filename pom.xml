@@ -177,6 +177,11 @@
             <name>Spring Framework Maven Repository - Nightly Snapshots</name>
             <url>http://maven.springframework.org/milestone</url>
         </repository>
+        <repository>
+            <id>synyx</id>
+            <name>Synyx Repository</name>
+            <url>http://repo.synyx.org</url>
+        </repository>
     </repositories>
 
 </project>
