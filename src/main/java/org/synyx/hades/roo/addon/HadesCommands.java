@@ -39,7 +39,7 @@ class HadesCommands implements CommandMarker {
             @CliOption(key = "entity", mandatory = true, specifiedDefaultValue = "*", optionContext = "update,project", help = "The entity you want to create the repository for") JavaType typeName,
             @CliOption(key = "package") JavaPackage daoPackage) {
 
-        operations.createDaoClass(typeName, daoPackage);
+        operations.createRepositoryInterface(typeName, daoPackage);
     }
 
 

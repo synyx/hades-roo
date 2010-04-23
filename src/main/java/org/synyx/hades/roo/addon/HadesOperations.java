@@ -35,7 +35,6 @@ import org.synyx.hades.dao.GenericDao;
 class HadesOperations {
 
     private static final JavaType idType = new JavaType(Id.class.getName());
-
     private static final String GENERIC_DAO_INTERFACE =
             GenericDao.class.getName();
 
@@ -102,43 +101,62 @@ class HadesOperations {
     }
 
 
-    public void createDaoClass(JavaType entity, JavaPackage daoPackage) {
+    /**
+     * Creates the actual repository interface.
+     * 
+     * @param entity
+     * @param daoPackage
+     */
+    public void createRepositoryInterface(JavaType entity, JavaPackage daoPackage) {
 
-        ClassOrInterfaceTypeDetails daoInterface =
+        ClassOrInterfaceTypeDetails repositoryInterface =
                 determineRepositoryInterface(entity, daoPackage);
 
-        classpathOperations.generateClassFile(daoInterface);
+        classpathOperations.generateClassFile(repositoryInterface);
     }
 
 
     /**
+     * Returns the complete basic repository interface for the given entity and
+     * package. If the given package is {@literal null}, the repository will be
+     * created in the entity's package.
+     * 
      * @param entity
-     * @param daoPackage
+     * @param repositoryPackage
      * @return
      */
     ClassOrInterfaceTypeDetails determineRepositoryInterface(JavaType entity,
-            JavaPackage daoPackage) {
+            JavaPackage repositoryPackage) {
 
-        EntityType entityType = new EntityType(entity, daoPackage);
-
-        JavaType interfaceName = entityType.getDaoInterfaceName();
+        JavaType interfaceType = getInterfaceTypeName(entity, repositoryPackage);
         JavaType superType = getGenericDaoSuperType(entity);
 
         String ressourceIdentifier =
                 classpathOperations.getPhysicalLocationCanonicalPath(
-                        interfaceName, Path.SRC_MAIN_JAVA);
+                        interfaceType, Path.SRC_MAIN_JAVA);
 
         String metadataId =
-                PhysicalTypeIdentifier.createIdentifier(interfaceName,
+                PhysicalTypeIdentifier.createIdentifier(interfaceType,
                         pathResolver.getPath(ressourceIdentifier));
 
-        ClassOrInterfaceTypeDetails daoInterface =
+        ClassOrInterfaceTypeDetails repositoryInterface =
                 new DefaultClassOrInterfaceTypeDetails(metadataId,
-                        interfaceName, Modifier.PUBLIC,
+                        interfaceType, Modifier.PUBLIC,
                         PhysicalTypeCategory.INTERFACE, null, null, null, null,
                         Arrays.asList(superType), null, null, null);
 
-        return daoInterface;
+        return repositoryInterface;
+    }
+
+
+    private JavaType getInterfaceTypeName(JavaType entityType,
+            JavaPackage repositoryPackage) {
+
+        String interfaceName =
+                repositoryPackage == null ? entityType.getFullyQualifiedTypeName()
+                        : repositoryPackage + "." + entityType.getSimpleTypeName();
+
+        return new JavaType(interfaceName + "Repository");
     }
 
 
@@ -154,34 +172,5 @@ class HadesOperations {
 
         return new JavaType(GENERIC_DAO_INTERFACE, 0, DataType.TYPE, null,
                 Arrays.asList(entityType, entityIdType));
-    }
-
-    static class EntityType {
-
-        private static final String DAO_POSTFIX = "Repository";
-
-        private final JavaType entityType;
-        private final JavaPackage daoPackage;
-
-
-        /**
-         * Creates a new {@link EntityType}.
-         * 
-         * @param type
-         * @param daoPackage
-         */
-        public EntityType(JavaType type, JavaPackage daoPackage) {
-
-            this.entityType = type;
-            this.daoPackage =
-                    daoPackage != null ? daoPackage : entityType.getPackage();
-        }
-
-
-        public JavaType getDaoInterfaceName() {
-
-            return new JavaType(daoPackage + "."
-                    + entityType.getSimpleTypeName() + DAO_POSTFIX);
-        }
     }
 }
