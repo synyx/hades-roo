@@ -17,7 +17,7 @@ import org.springframework.roo.support.util.Assert;
  * @author Oliver Gierke
  */
 @ScopeDevelopmentShell
-public class HadesCommands implements CommandMarker {
+class HadesCommands implements CommandMarker {
 
     private final HadesOperations operations;
     private final HadesInstallationOperations installationOperations;

@@ -4,6 +4,7 @@ import org.springframework.roo.addon.jpa.JpaOperations;
 import org.springframework.roo.metadata.MetadataService;
 import org.springframework.roo.project.ProjectMetadata;
 import org.springframework.roo.support.lifecycle.ScopeDevelopment;
+import org.springframework.roo.support.util.Assert;
 import org.springframework.roo.support.util.XmlUtils;
 import org.synyx.hades.roo.addon.support.Spring;
 import org.synyx.hades.roo.addon.support.SpringConfigFile;
@@ -25,10 +26,10 @@ class HadesInstallationOperations {
     private static final String HADES_CONFIG_TEMPLATE =
             "applicationContext-hades-template.xml";
 
-    private JpaOperations jpaOperations;
-    private HadesProjectOperations projectOperations;
-    private SpringManager springManager;
-    private MetadataService metadataService;
+    private final JpaOperations jpaOperations;
+    private final HadesProjectOperations projectOperations;
+    private final SpringManager springManager;
+    private final MetadataService metadataService;
 
 
     /**
@@ -40,6 +41,11 @@ class HadesInstallationOperations {
     public HadesInstallationOperations(JpaOperations jpaOperations,
             HadesProjectOperations projectOperations,
             SpringManager springManager, MetadataService metadataService) {
+
+        Assert.notNull(projectOperations);
+        Assert.notNull(jpaOperations);
+        Assert.notNull(springManager);
+        Assert.notNull(metadataService);
 
         this.jpaOperations = jpaOperations;
         this.projectOperations = projectOperations;
