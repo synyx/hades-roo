@@ -184,4 +184,19 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <site>
+            <id>static.synyx.org</id>
+            <url>scp://static.synyx.org/home/public/public_html/hades-roo/site</url>
+        </site>
+        <repository>
+            <id>nexus.synyx.de</id>
+            <url>http://nexus.synyx.de/content/repositories/public-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus.synyx.de</id>
+            <url>http://nexus.synyx.de/content/repositories/public-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
