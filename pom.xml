@@ -9,11 +9,32 @@
 
     <name>Hades - Roo addon</name>
     <description>Addon for Spring Roo to provide generic DAO and query methods based on Hades.</description>
+    <url>http://hades.synyx.org</url>
     
     <organization>
         <name>Oliver Gierke</name>
         <url>http://www.olivergierke.de</url>
     </organization>
+    
+    <inceptionYear>2010</inceptionYear>
+    
+    <developers>
+        <developer>
+            <id>oliver.gierke</id>
+            <name>Oliver Gierke</name>
+            <organization>SpringSource, a division of VMware</organization>
+            <organizationUrl>http://www.springsource.com</organizationUrl>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
 
     <properties>
         <roo.version>1.1.0.M1</roo.version>
@@ -191,10 +212,10 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Copyright>Copyright ${pom.organization.name} authors. All Rights Reserved.</Bundle-Copyright>
+                        <Bundle-Copyright>Copyright ${project.organization.name} authors. All Rights Reserved.</Bundle-Copyright>
                         <Bundle-DocURL>${project.url}</Bundle-DocURL>
                         <Export-Package>org.synyx.hades.roo.addon</Export-Package>
-                        <Bundle-DocURL>${pom.url}</Bundle-DocURL>
+                        <Bundle-DocURL>${project.url}</Bundle-DocURL>
                     </instructions>
                 </configuration>
             </plugin>
@@ -312,6 +333,57 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <!--  Additional plugins for deploy step -->
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>                
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!--  Sign artifacts -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.key}</keyname>
+                                    <passphrase>${gpg.password}</passphrase>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <!-- Package JavaDoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.5</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
@@ -345,25 +417,25 @@
             <url>http://maven.springframework.org/milestone</url>
         </repository>
         <repository>
-            <id>synyx</id>
-            <name>Synyx Repository</name>
-            <url>http://repo.synyx.org</url>
+            <id>sonatype</id>
+            <name>Sonatype Snapshot Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <site>
             <id>static.synyx.org</id>
-            <url>scp://static.synyx.org/home/public/public_html/hades-roo/site</url>
+            <url>scp://static.synyx.org/home/public/public_html/hades/2.x/site</url>
         </site>
         <repository>
-            <id>nexus.synyx.de</id>
-            <url>http://nexus.synyx.de/content/repositories/public-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus.synyx.de</id>
-            <url>http://nexus.synyx.de/content/repositories/public-snapshots</url>
-        </snapshotRepository>
+			<id>sonatype</id>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
     </distributionManagement>
 
 </project>
