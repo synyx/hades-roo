@@ -1,13 +1,14 @@
 package org.synyx.hades.roo.addon;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.springframework.roo.model.JavaPackage;
 import org.springframework.roo.model.JavaType;
 import org.springframework.roo.shell.CliAvailabilityIndicator;
 import org.springframework.roo.shell.CliCommand;
 import org.springframework.roo.shell.CliOption;
 import org.springframework.roo.shell.CommandMarker;
-import org.springframework.roo.support.lifecycle.ScopeDevelopmentShell;
-import org.springframework.roo.support.util.Assert;
 
 
 /**
@@ -16,22 +17,14 @@ import org.springframework.roo.support.util.Assert;
  * 
  * @author Oliver Gierke
  */
-@ScopeDevelopmentShell
-class HadesCommands implements CommandMarker {
+@Service
+@Component
+public class HadesCommands implements CommandMarker {
 
-    private final HadesOperations operations;
-    private final HadesInstallationOperations installationOperations;
-
-
-    public HadesCommands(HadesOperations operations,
-            HadesInstallationOperations installationOperations) {
-
-        Assert.notNull(operations);
-        Assert.notNull(installationOperations);
-
-        this.operations = operations;
-        this.installationOperations = installationOperations;
-    }
+    @Reference
+    private HadesOperations operations;
+    @Reference
+    private HadesInstallationOperations installationOperations;
 
 
     @CliCommand(value = "hades repository", help = "Creates a Hades repository interface")

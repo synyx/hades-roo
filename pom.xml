@@ -1,41 +1,145 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <groupId>org.synyx.hades</groupId>
     <artifactId>org.synyx.hades.roo.addon</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    
+    <version>0.1.0.BUILD-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
     <name>Hades - Roo addon</name>
     <description>Addon for Spring Roo to provide generic DAO and query methods based on Hades.</description>
+    
+    <organization>
+        <name>Oliver Gierke</name>
+        <url>http://www.olivergierke.de</url>
+    </organization>
+
+    <properties>
+        <roo.version>1.1.0.M1</roo.version>
+    </properties>
 
     <dependencies>
-     
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.classpath</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.file.undo</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.file.monitor</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.support</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.model</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.process.manager</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.project</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.shell</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.metadata</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.roo</groupId>
             <artifactId>org.springframework.roo.bootstrap</artifactId>
-            <version>1.1.0.M1</version>
+            <version>${roo.version}</version>
+            <scope>provided</scope>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.addon.entity</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.roo</groupId>
+            <artifactId>org.springframework.roo.addon.jpa</artifactId>
+            <version>${roo.version}</version>
+            <type>bundle</type>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
             <scope>test</scope>
         </dependency>
-        
+
+
         <dependency>
-            <groupId>org.synyx.hades</groupId>
-            <artifactId>org.synyx.hades</artifactId>
-            <version>2.0.0.BUILD-SNAPSHOT</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.test</artifactId>
+            <version>3.0.2.RELEASE</version>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.test</artifactId>
-            <version>3.0.0.RELEASE</version>
+            <artifactId>org.springframework.beans</artifactId>
+            <version>3.0.2.RELEASE</version>
+            <scope>test</scope>
         </dependency>
         
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>com.springsource.javax.persistence</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -50,22 +154,60 @@
                         <phase>compile</phase>
                         <configuration>
                             <tasks>
-                                <property name="line.separator" value="${line.separator}"/>
-                                <echo append="false" file="${basedir}/setup.bat">@set
-                                    ROO_ADDON_CLASSPATH_FILE="${project.build.directory}\roo_classpath.txt"</echo>
-                                <echo append="false" file="${basedir}/setup.env">export
-                                    ROO_ADDON_CLASSPATH_FILE="${project.build.directory}/roo_classpath.txt"</echo>
-                                <echo message="Created '${basedir}/setup.env' and '${basedir}\setup.bat'"/>
-                                <echo message="*nix: use source ${basedir}/setup.env to read in variable"/>
-                                <dirname file="${project.build.directory}" property="output.dir"/>
-                                <mkdir dir="${output.dir}"/>
-                                <property name="the_cp" refid="maven.runtime.classpath"/>
+                                <property name="line.separator" value="${line.separator}" />
+                                <echo append="false" file="${basedir}/setup.bat" message="@set ROO_ADDON_CLASSPATH_FILE=&quot;${project.build.directory}\roo_classpath.txt&quot;" />
+                                <echo append="false" file="${basedir}/setup.env" message="export ROO_ADDON_CLASSPATH_FILE=&quot;${project.build.directory}/roo_classpath.txt&quot;" />
+                                <echo message="Created '${basedir}/setup.env' and '${basedir}\setup.bat'" />
+                                <echo message="*nix: use source ${basedir}/setup.env to read in variable" />
+                                <dirname file="${project.build.directory}" property="output.dir" />
+                                <mkdir dir="${output.dir}" />
+                                <property name="the_cp" refid="maven.runtime.classpath" />
                                 <echo append="false" file="${project.build.directory}/roo_classpath.txt">${the_cp}</echo>
-                                <echo message="Cached Roo add-on classpath file '${project.build.directory}/roo_classpath.txt'"/>
+                                <echo message="Cached Roo add-on classpath file '${project.build.directory}/roo_classpath.txt'" />
                             </tasks>
                         </configuration>
                         <goals>
                             <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.0.1</version>
+                <extensions>true</extensions>
+                <!-- 
+                <executions>
+                    <execution>
+                        <id>generate-manifest</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                 -->
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Copyright>Copyright ${pom.organization.name} authors. All Rights Reserved.</Bundle-Copyright>
+                        <Bundle-DocURL>${project.url}</Bundle-DocURL>
+                        <Export-Package>org.synyx.hades.roo.addon</Export-Package>
+                        <Bundle-DocURL>${pom.url}</Bundle-DocURL>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.4.2</version>
+                <executions>
+                    <execution>
+                        <id>generate-scr-scrdescriptor</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>scr</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -78,22 +220,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.4</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.4.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.4.3</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
+                <version>2.1</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -102,7 +247,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -115,7 +260,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.0.4</version>
+                <version>2.1.1</version>
                 <configuration>
                     <attach>true</attach>
                 </configuration>
@@ -132,30 +277,42 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.2-beta-5</version>
-                <executions>
-                    <execution>
-                        <id>assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <attach>true</attach>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <!-- IDE -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>false</downloadJavadocs>
+                    <!--
+                        WTP is not required <wtpversion>2.0</wtpversion>
+                    -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-idea-plugin</artifactId>
                 <version>2.2</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <dependenciesAsLibraries>true</dependenciesAsLibraries>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-    
+
     <repositories>
         <repository>
             <id>com.springsource.repository.bundles.release</id>

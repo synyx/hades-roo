@@ -6,36 +6,27 @@ import static org.springframework.roo.support.util.XmlUtils.*;
 
 import java.io.IOException;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.springframework.roo.process.manager.FileManager;
 import org.springframework.roo.process.manager.MutableFile;
 import org.springframework.roo.project.Path;
 import org.springframework.roo.project.PathResolver;
-import org.springframework.roo.support.lifecycle.ScopeDevelopment;
 import org.w3c.dom.Document;
 
 
 /**
  * @author Oliver Gierke
  */
-@ScopeDevelopment
-class DefaultSpringManager implements SpringManager {
+@Service
+@Component
+public class DefaultSpringManager implements SpringManager {
 
-    private final PathResolver pathResolver;
-    private final FileManager fileManager;
-
-
-    /**
-     * Creates a new {@link DefaultSpringManager}.
-     * 
-     * @param pathResolver
-     * @param fileManager
-     */
-    public DefaultSpringManager(PathResolver pathResolver,
-            FileManager fileManager) {
-
-        this.pathResolver = pathResolver;
-        this.fileManager = fileManager;
-    }
+    @Reference
+    private PathResolver pathResolver;
+    @Reference
+    private FileManager fileManager;
 
 
     /*

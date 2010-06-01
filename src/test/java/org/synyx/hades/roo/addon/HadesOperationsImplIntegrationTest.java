@@ -11,11 +11,12 @@ import org.synyx.hades.roo.addon.support.AbstractRooIntegrationTests;
 
 
 /**
- * Intergration test for {@link HadesOperations}.
+ * Intergration test for {@link HadesOperationsImpl}.
  * 
  * @author Oliver Gierke
  */
-public class HadesOperationsIntegrationTest extends AbstractRooIntegrationTests {
+public class HadesOperationsImplIntegrationTest extends
+        AbstractRooIntegrationTests {
 
     private static final String PACKAGE = "org.synyx.hades.roo.addon";
     private static final JavaType ID_TYPE = new JavaType("java.lang.Long");
@@ -25,7 +26,7 @@ public class HadesOperationsIntegrationTest extends AbstractRooIntegrationTests 
             new JavaType(PACKAGE + ".UserRepository");
 
     @Autowired
-    private HadesOperations hades;
+    private HadesOperationsImpl hades;
 
 
     @Test
