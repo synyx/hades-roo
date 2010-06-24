@@ -9,7 +9,7 @@
 
     <name>Hades - Roo addon</name>
     <description>Addon for Spring Roo to provide generic DAO and query methods based on Hades.</description>
-    <url>http://hades.synyx.org</url>
+    <url>http://redmine.synyx.org/projects/hades-roo</url>
     
     <organization>
         <name>Oliver Gierke</name>
@@ -22,6 +22,7 @@
         <developer>
             <id>oliver.gierke</id>
             <name>Oliver Gierke</name>
+            <url>http://www.olivergierke.de</url>
             <organization>SpringSource, a division of VMware</organization>
             <organizationUrl>http://www.springsource.com</organizationUrl>
             <timezone>+1</timezone>
@@ -269,14 +270,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
