@@ -430,7 +430,7 @@
     <distributionManagement>
         <site>
             <id>static.synyx.org</id>
-            <url>scp://static.synyx.org/home/public/public_html/hades/2.x/site</url>
+            <url>scp://static.synyx.org/home/public/public_html/hades/roo/site</url>
         </site>
         <repository>
 			<id>sonatype</id>
