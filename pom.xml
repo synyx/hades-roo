@@ -430,8 +430,8 @@
     
     <scm>
         <url>http://redmine.synyx.org/projects/hades-roo/repository</url>
-        <connection>scm:git:git://git@git.synyx.org/hades-roo.git</connection>
-        <developerConnection>scm:git:git://git@git.synyx.org/hades-roo.git</developerConnection>
+        <connection>scm:git:ssh://git@git.synyx.org/hades-roo.git</connection>
+        <developerConnection>scm:git:ssh://git@git.synyx.org/hades-roo.git</developerConnection>
     </scm>
 
     <distributionManagement>
