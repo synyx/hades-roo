@@ -415,6 +415,12 @@
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
+    
+    <scm>
+        <url>http://redmine.synyx.org/projects/hades-roo/repository</url>
+        <connection>scm:git:http://git.synyx.org/hades-roo.git</connection>
+        <developerConnection>scm:git:https://git.synyx.org/hades-roo.git</developerConnection>
+    </scm>
 
     <distributionManagement>
         <site>
