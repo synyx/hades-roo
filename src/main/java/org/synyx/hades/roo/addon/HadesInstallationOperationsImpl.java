@@ -31,7 +31,7 @@ public class HadesInstallationOperationsImpl implements
     private static final String HADES_CONFIG_TEMPLATE =
             "applicationContext-hades-template.xml";
     private static final Dependency HADES = new Dependency("org.synyx.hades",
-            "org.synyx.hades", "2.0.0.RC2");
+            "org.synyx.hades", "2.0.0.RC3");
 
     @Reference
     private JpaOperations jpaOperations;
