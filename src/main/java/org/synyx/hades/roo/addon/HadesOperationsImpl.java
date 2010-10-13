@@ -4,6 +4,8 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.Id;
+
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -11,7 +13,7 @@ import org.springframework.roo.addon.entity.EntityMetadata;
 import org.springframework.roo.classpath.PhysicalTypeCategory;
 import org.springframework.roo.classpath.PhysicalTypeIdentifier;
 import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetails;
-import org.springframework.roo.classpath.details.DefaultClassOrInterfaceTypeDetails;
+import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetailsBuilder;
 import org.springframework.roo.classpath.details.FieldMetadata;
 import org.springframework.roo.classpath.details.MemberFindingUtils;
 import org.springframework.roo.classpath.details.MethodMetadata;
@@ -131,13 +133,14 @@ public class HadesOperationsImpl implements HadesOperations {
                 PhysicalTypeIdentifier.createIdentifier(interfaceType,
                         pathResolver.getPath(ressourceIdentifier));
 
-        ClassOrInterfaceTypeDetails repositoryInterface =
-                new DefaultClassOrInterfaceTypeDetails(metadataId,
-                        interfaceType, Modifier.PUBLIC,
-                        PhysicalTypeCategory.INTERFACE, null, null, null, null,
-                        Arrays.asList(superType), null, null, null);
+        ClassOrInterfaceTypeDetailsBuilder builder =
+                new ClassOrInterfaceTypeDetailsBuilder(metadataId);
+        builder.setPhysicalTypeCategory(PhysicalTypeCategory.INTERFACE);
+        builder.setName(interfaceType);
+        builder.setModifier(Modifier.PUBLIC);
+        builder.addExtendsTypes(superType);
 
-        return repositoryInterface;
+        return builder.build();
     }
 
 

@@ -37,8 +37,8 @@
     </licenses>
 
     <properties>
-        <roo.version>1.1.0.M1</roo.version>
-        <spring.version>3.0.3.RELEASE</spring.version>
+    	<roo.version>1.1.0.RC1</roo.version>
+    	<spring.version>3.0.4.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -159,7 +159,6 @@
             <groupId>javax.persistence</groupId>
             <artifactId>com.springsource.javax.persistence</artifactId>
             <version>2.0.0</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
